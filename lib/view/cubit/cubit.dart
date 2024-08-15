@@ -62,4 +62,27 @@ class ManagingRequestsCubit extends Cubit<ManagingRequestsStates> {
       emit(ManagingRequestsErrorState());
     });
   }
+
+  addAccessories(
+      {required context,
+      required String category,
+      required String name,
+      required int price,
+      required String description}) {
+    emit(ManagingRequestsLoadingState());
+    DioHelper.addAccessories(
+            category: category, name: name, price: price, image: fileBytes)
+        .then((value) {
+      print(value.data);
+      print(value.statusCode);
+      showToast(
+          context: context,
+          text: value.data['message'],
+          color: value.statusCode == 201 ? Colors.green : Colors.red);
+      emit(ManagingRequestsSuccessState());
+    }).onError((error, stackHolder) {
+      print('ADD ACCESSORIES ERROR: ${error.toString()}');
+      emit(ManagingRequestsErrorState());
+    });
+  }
 }
