@@ -1,15 +1,21 @@
 import 'package:admainp/network/api1.dart';
-class  Food{
+
+class Food {
   int id;
   String name;
   int price;
   String description;
-  Food({required this.id,required this.name,required this.price,required this.description, });
 
-  Map<String,dynamic> tojson() => {'id':id , 'name':name,'price':price,'description':description};
+  Food({
+    required this.id,
+    required this.name,
+    required this.price,
+    required this.description,
+  });
 
+  Map<String, dynamic> tojson() =>
+      {'id': id, 'name': name, 'price': price, 'description': description};
 }
-
 
 class PostFood {
   final int id;
@@ -27,15 +33,33 @@ class PostFood {
   }
 }
 
+class Media {
+  late int id;
+  late String media_url;
 
+  //Media({required this.id, required this.media_url});
 
-class Media{
-  final  int id;
-  final String media_url;
-  Media({required this.id,required this.media_url}) ;
-  factory Media.fromJson(jsonData){
-    return  Media(id: jsonData['id'], media_url: jsonData['media_url']);
+  Media.fromJson(Map<String, dynamic> json) {
+     //Media(id: jsonData['id'], media_url: jsonData['media_url']);
+    id = json['id'];
+    media_url = json['media_url'];
   }
 
   get imageUrl => null;
+}
+
+class MyFoodModel {
+  late int id;
+  late String name;
+  late int price;
+  late String description;
+  late Media media;
+
+  MyFoodModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    price = json['price'];
+    description = json['description'];
+    media = Media.fromJson(json['media']);
+  }
 }

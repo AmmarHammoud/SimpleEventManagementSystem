@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:admainp/model/food_model.dart';
 import 'package:admainp/network/dio_helper.dart';
 import 'package:admainp/shared/components.dart';
 import 'package:admainp/view/cubit/states.dart';
@@ -83,6 +84,40 @@ class ManagingRequestsCubit extends Cubit<ManagingRequestsStates> {
     }).onError((error, stackHolder) {
       print('ADD ACCESSORIES ERROR: ${error.toString()}');
       emit(ManagingRequestsErrorState());
+    });
+  }
+
+  List<MyFoodModel> allFood = [];
+
+  getAllFood() {
+    emit(ManagingRequestsLoadingState());
+    allFood.clear();
+    DioHelper.getAllFood().then((value) {
+      //print(value.data);
+      for (int i = 0; i < value.data['data'].length; i++) {
+        allFood.add(MyFoodModel.fromJson(value.data['data'][i]));
+      }
+      emit(ManagingRequestsSuccessState());
+    }).onError((error, h) {
+      print('getting all food ${error.toString()}');
+      emit(ManagingRequestsErrorState());
+    });
+  }
+
+  deleteFood({required context, required int id}) {
+    emit(ManagingRequestsLoadingState());
+    DioHelper.deleteFood(id: id).then((value) {
+      print(value.data);
+      print(value.statusCode);
+      showToast(
+          context: context,
+          text: value.data['message'],
+          color: value.statusCode == 200 ? Colors.green : Colors.red);
+      getAllFood();
+      emit(ManagingRequestsSuccessState());
+    }).onError((error, h) {
+      print('deleting food ${error.toString()}');
+      emit(ManagingRequestsSuccessState());
     });
   }
 }
